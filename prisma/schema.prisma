@@ -36,7 +36,7 @@ model Card {
 }
 
 model Route {
-  id Int @id
+  id Int @id @default(autoincrement())
   name String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -61,7 +61,7 @@ model ReportType {
 }
 
 model Report {
-  id Int @id
+  id Int @id @default(autoincrement())
   reportTypeId Int
   busId Int
   description String @db.VarChar(512)
@@ -72,7 +72,7 @@ model Report {
 }
 
 model Transaction {
-  id Int @id
+  id Int @id @default(autoincrement())
   cardId Int
   amount Decimal @db.Decimal(6, 2)
   createdAt DateTime @default(now())
@@ -81,7 +81,7 @@ model Transaction {
 }
 
 model Transfer {
-  id Int @id
+  id Int @id @default(autoincrement())
   cardId Int
   busId Int
   location Json

@@ -26,7 +26,7 @@ CREATE TABLE `Card` (
 
 -- CreateTable
 CREATE TABLE `Route` (
-    `id` INTEGER NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE `ReportType` (
 
 -- CreateTable
 CREATE TABLE `Report` (
-    `id` INTEGER NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `reportTypeId` INTEGER NOT NULL,
     `busId` INTEGER NOT NULL,
     `description` VARCHAR(512) NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE `Report` (
 
 -- CreateTable
 CREATE TABLE `Transaction` (
-    `id` INTEGER NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `cardId` INTEGER NOT NULL,
     `amount` DECIMAL(6, 2) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -79,7 +79,7 @@ CREATE TABLE `Transaction` (
 
 -- CreateTable
 CREATE TABLE `Transfer` (
-    `id` INTEGER NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `cardId` INTEGER NOT NULL,
     `busId` INTEGER NOT NULL,
     `location` JSON NOT NULL,
