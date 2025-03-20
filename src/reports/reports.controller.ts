@@ -7,7 +7,7 @@ import { AddReportDto } from './dtos/add-report';
 @ApiTags('reports')
 @Controller('reports')
 export class ReportsController {
-  constructor(private readonly reportsService: ReportsService) {}
+  constructor(private reportsService: ReportsService) {}
 
   @Get('/types')
   @ApiResponse({
