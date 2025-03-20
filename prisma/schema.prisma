@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model CardType {
+  id Int @id @default(autoincrement())
+  name String
+  description String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  cards Card[]
+}
+
+model Card {
+  id Int @id
+  serialNumber String @unique
+  description String?
+  cardTypeId Int
+  isPreferential Boolean @default(false)
+  balance Decimal @db.Decimal(6, 2) @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  CardType CardType @relation(fields: [cardTypeId], references: [id])
+  transactions Transaction[]
+}
+
+model Route {
+  id Int @id
+  name String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  buses Bus[]
+}
+
+model Bus {
+  id Int @id
+  routeId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Route Route @relation(fields: [routeId], references: [id])
+  reports Report[]
+}
+
+model ReportType {
+  id Int @id @default(autoincrement())
+  name String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  reports Report[]
+}
+
+model Report {
+  id Int @id
+  reportTypeId Int
+  busId Int
+  description String @db.VarChar(512)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ReportType ReportType @relation(fields: [reportTypeId], references: [id])
+  Bus Bus @relation(fields: [busId], references: [id])
+}
+
+model Transaction {
+  id Int @id
+  cardId Int
+  amount Decimal @db.Decimal(6, 2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Card Card @relation(fields: [cardId], references: [id])
+}
+
+model Transfer {
+  id Int @id
+  cardId Int
+  busId Int
+  location Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
