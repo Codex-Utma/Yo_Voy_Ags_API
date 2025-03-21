@@ -20,10 +20,18 @@ class TransferDto {
 }
 
 class CardUseDto {
-  @ApiProperty({ example: 10.5, type: 'number', description: 'Monto usado en la tarjeta' })
+  @ApiProperty({
+    example: 10.5,
+    type: 'number',
+    description: 'Amount used in the card',
+  })
   amount: Decimal;
 
-  @ApiProperty({ example: new Date().toISOString(), type: 'string', format: 'date-time' })
+  @ApiProperty({
+    example: new Date().toISOString(),
+    type: 'string',
+    format: 'date-time',
+  })
   createdAt: Date;
 
   @ApiProperty({ type: TransferDto })
@@ -31,16 +39,22 @@ class CardUseDto {
 }
 
 export class CardDataDto {
-  @ApiProperty({ example: 12345, description: 'ID de la tarjeta' })
+  @ApiProperty({ example: 12345, description: 'Card ID' })
   cardId: number;
 
-  @ApiProperty({ example: 150.75, description: 'Saldo actual' })
+  @ApiProperty({ example: 150.75, description: 'Current balance' })
   balance: number;
 
-  @ApiProperty({ example: true, description: 'Indica si es una tarjeta preferencial' })
+  @ApiProperty({
+    example: true,
+    description: 'Indicates if it is a preferential card',
+  })
   isPreferential: boolean;
 
-  @ApiProperty({ type: [CardUseDto], description: 'Historial de usos de la tarjeta' })
+  @ApiProperty({
+    type: [CardUseDto],
+    description: 'Card usage history',
+  })
   cardUses: CardUseDto[];
 }
 
