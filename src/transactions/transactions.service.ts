@@ -15,7 +15,11 @@ export class TransactionsService {
       if (!isValidCardId) {
         throw new HttpException('Invalid card id', 400);
       }
-      const newBalance = await this.UpdateBalance(cardId, amount);
+      const newBalance = await this.UpdateBalance(
+        isValidCardId.cardId,
+        amount,
+        isValidCardId.isPreferential,
+      );
       await prisma.transaction.create({
         data: {
           cardId,
@@ -38,22 +42,26 @@ export class TransactionsService {
     try {
       const { cardSerial, busId, latitude, longitude } = useData;
 
-      const cardId = await this.ValidateCard(undefined, cardSerial);
-      if (!cardId) {
+      const card = await this.ValidateCard(undefined, cardSerial);
+      if (!card) {
         throw new HttpException('Invalid serial card', 400);
       }
 
-      const newBalance = await this.UpdateBalance(cardId, -10.5);
+      const newBalance = await this.UpdateBalance(
+        card.cardId,
+        card.isPreferential ? -5.25 : -10.5,
+        card.isPreferential,
+      );
       await prisma.transaction.create({
         data: {
-          cardId,
+          cardId: card.cardId,
           amount: -10.5,
         },
       });
 
       await prisma.transfer.create({
         data: {
-          cardId,
+          cardId: card.cardId,
           busId,
           location: {
             latitude,
@@ -78,7 +86,7 @@ export class TransactionsService {
   private async ValidateCard(
     cardId?: number,
     cardSerial?: string,
-  ): Promise<number> {
+  ): Promise<{ cardId: number; isPreferential: boolean } | 0> {
     const card = await prisma.card.findFirst({
       where: {
         OR: [
@@ -92,21 +100,32 @@ export class TransactionsService {
       },
       select: {
         id: true,
+        isPreferential: true,
       },
     });
 
     if (!card) {
       return 0;
     }
-    return card.id;
+
+    const cardData = {
+      cardId: card.id,
+      isPreferential: card.isPreferential,
+    };
+
+    return cardData;
   }
-  private async UpdateBalance(cardId: number, amount: number): Promise<number> {
+  private async UpdateBalance(
+    cardId: number,
+    amount: number,
+    isPreferential: boolean,
+  ): Promise<number> {
     if (amount < 0) {
       const card = await prisma.card.findFirst({
         where: {
           id: cardId,
           balance: {
-            lte: 10.5,
+            lte: isPreferential ? 5.25 : 10.5,
           },
         },
       });
