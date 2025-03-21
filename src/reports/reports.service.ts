@@ -55,7 +55,7 @@ export class ReportsService {
         },
       });
 
-      return { message: 'Report added' };
+      return { message: 'Report added successfully' };
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
