@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RechargeResponseDto } from './dtos/response-recharge';
@@ -34,4 +34,9 @@ export class TransactionsController {
   use(@Body() useData: UseRequestDto) {
     return this.transactionsService.cardUse(useData);
   }
+
+  // @Get('data/:cardId')
+  // getCardData(@Param('cardId') cardId: string) {
+  //   return this.transactionsService.getCardData(cardId);
+  // }
 }

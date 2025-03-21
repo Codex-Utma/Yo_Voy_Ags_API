@@ -52,14 +52,8 @@ export class TransactionsService {
         card.isPreferential ? -5.25 : -10.5,
         card.isPreferential,
       );
-      await prisma.transaction.create({
-        data: {
-          cardId: card.cardId,
-          amount: -10.5,
-        },
-      });
 
-      await prisma.transfer.create({
+      const newTransfer = await prisma.transfer.create({
         data: {
           cardId: card.cardId,
           busId,
@@ -67,6 +61,14 @@ export class TransactionsService {
             latitude,
             longitude,
           },
+        },
+      });
+
+      await prisma.transaction.create({
+        data: {
+          cardId: card.cardId,
+          amount: -10.5,
+          transferId: newTransfer.id,
         },
       });
 
@@ -83,10 +85,50 @@ export class TransactionsService {
     }
   }
 
+  /*
+  async getCardData(cardId: string) {
+    try {
+      const cardData = await this.ValidateCard(Number(cardId));
+      if (!cardData) {
+        throw new HttpException('Invalid card id', 400);
+      }
+      const cardUses = await prisma.transfer.findMany({
+        orderBy: {
+          createdAt: 'asc',
+        },
+        where: {
+          AND: [
+            {
+              cardId: cardData.cardId,
+            },
+          ],
+        },
+        select: {
+          Bus: {
+            select: {
+              id: true,
+              Route: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+
+        },
+      });
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('Internal server error', 500);
+    }
+  */
+
   private async ValidateCard(
     cardId?: number,
     cardSerial?: string,
-  ): Promise<{ cardId: number; isPreferential: boolean } | 0> {
+  ): Promise<{ cardId: number; isPreferential: boolean; balance: number } | 0> {
     const card = await prisma.card.findFirst({
       where: {
         OR: [
@@ -101,6 +143,7 @@ export class TransactionsService {
       select: {
         id: true,
         isPreferential: true,
+        balance: true,
       },
     });
 
@@ -111,6 +154,7 @@ export class TransactionsService {
     const cardData = {
       cardId: card.id,
       isPreferential: card.isPreferential,
+      balance: Number(card.balance),
     };
 
     return cardData;
