@@ -66,6 +66,20 @@ async function seedDb() {
         },
       ],
     });
+    await prisma.reportType.createMany({
+      data: [
+        {
+          name: 'Objecto extraviado',
+
+        },
+        {
+          name: 'Comportamiento inapropiado del conductor',
+        },
+        {
+          name: 'Estado de la unidad',
+        }
+      ]
+    });
   } catch (error) {
     console.error(error);
     throw new Error('Internal server error');
