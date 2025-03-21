@@ -3,6 +3,8 @@ import { TransactionsService } from './transactions.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RechargeResponseDto } from './dtos/response-recharge';
 import { RechargeRequestDto } from './dtos/request-recharge';
+import { UseRequestDto } from './dtos/request-use';
+import { UseResponseDto } from './dtos/response-use';
 
 @ApiTags('transactions')
 @Controller('transactions')
@@ -19,5 +21,17 @@ export class TransactionsController {
   @ApiResponse({ status: 500, description: 'Internal server error' })
   recharge(@Body() rechargeData: RechargeRequestDto) {
     return this.transactionsService.recharge(rechargeData);
+  }
+
+  @Post('use')
+  @ApiResponse({
+    status: 201,
+    description: 'Use completed successfully',
+    type: UseResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Invalid serial card' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  use(@Body() useData: UseRequestDto) {
+    return this.transactionsService.cardUse(useData);
   }
 }
