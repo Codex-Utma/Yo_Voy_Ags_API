@@ -69,7 +69,7 @@ export class ReportsService {
     }
   }
 
-  async ValidateBusId(busId: number): Promise<boolean> {
+  private async ValidateBusId(busId: number): Promise<boolean> {
     const bus = await prisma.bus.findUnique({
       where: {
         id: busId,
@@ -78,7 +78,7 @@ export class ReportsService {
     return !!bus;
   }
 
-  async ValidateReportTypeId(reportTypeId: number): Promise<boolean> {
+  private async ValidateReportTypeId(reportTypeId: number): Promise<boolean> {
     const reportType = await prisma.reportType.findUnique({
       where: {
         id: reportTypeId,
