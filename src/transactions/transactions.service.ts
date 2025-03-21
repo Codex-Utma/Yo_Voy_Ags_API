@@ -101,6 +101,19 @@ export class TransactionsService {
     return card.id;
   }
   private async UpdateBalance(cardId: number, amount: number): Promise<number> {
+    if (amount < 0) {
+      const card = await prisma.card.findFirst({
+        where: {
+          id: cardId,
+          balance: {
+            lte: 10.5,
+          },
+        },
+      });
+      if (card) {
+        throw new HttpException('Insufficient balance', 400);
+      }
+    }
     const cardUpdated = await prisma.card.update({
       where: {
         id: cardId,
