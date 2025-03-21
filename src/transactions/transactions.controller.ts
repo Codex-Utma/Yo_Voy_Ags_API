@@ -5,6 +5,7 @@ import { RechargeResponseDto } from './dtos/response-recharge';
 import { RechargeRequestDto } from './dtos/request-recharge';
 import { UseRequestDto } from './dtos/request-use';
 import { UseResponseDto } from './dtos/response-use';
+import { CardDataResponseDto } from './dtos/card-data-response';
 
 @ApiTags('transactions')
 @Controller('transactions')
@@ -35,8 +36,15 @@ export class TransactionsController {
     return this.transactionsService.cardUse(useData);
   }
 
-  // @Get('data/:cardId')
-  // getCardData(@Param('cardId') cardId: string) {
-  //   return this.transactionsService.getCardData(cardId);
-  // }
+  @Get('data/:cardId')
+  @ApiResponse({
+    status: 200,
+    description: 'Card data retrieved successfully',
+    type: CardDataResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Invalid card id' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  getCardData(@Param('cardId') cardId: string) {
+    return this.transactionsService.getCardData(cardId);
+  }
 }

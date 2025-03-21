@@ -85,45 +85,62 @@ export class TransactionsService {
     }
   }
 
-  /*
   async getCardData(cardId: string) {
     try {
       const cardData = await this.ValidateCard(Number(cardId));
       if (!cardData) {
         throw new HttpException('Invalid card id', 400);
       }
-      const cardUses = await prisma.transfer.findMany({
+      const cardUses = await prisma.transaction.findMany({
         orderBy: {
-          createdAt: 'asc',
+          createdAt: 'desc',
         },
         where: {
-          AND: [
-            {
-              cardId: cardData.cardId,
-            },
-          ],
+          cardId: cardData.cardId,
         },
         select: {
-          Bus: {
+          amount: true,
+          createdAt: true,
+          Transfer: {
             select: {
-              id: true,
-              Route: {
+              Bus: {
                 select: {
-                  name: true,
+                  id: true,
+                  Route: {
+                    select: {
+                      name: true,
+                    },
+                  },
                 },
               },
             },
           },
-
         },
+        take: 10,
       });
+
+      const updatedCardUses = cardUses.map((use) => ({
+        ...use,
+        createdAt: new Date(use.createdAt.getTime() + 6 * 60 * 60 * 1000),
+      }));
+
+      const response = {
+        cardData: {
+          cardId: cardData.cardId,
+          balance: cardData.balance,
+          isPreferential: cardData.isPreferential,
+          cardUses: updatedCardUses,
+        },
+      };
+
+      return { response };
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
       }
       throw new HttpException('Internal server error', 500);
     }
-  */
+  }
 
   private async ValidateCard(
     cardId?: number,
