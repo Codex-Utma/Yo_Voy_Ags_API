@@ -15,6 +15,8 @@ export class TransactionsController {
     description: 'Recharged completed successfully',
     type: RechargeResponseDto,
   })
+  @ApiResponse({ status: 400, description: 'Invalid card id' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
   recharge(@Body() rechargeData: RechargeRequestDto) {
     return this.transactionsService.recharge(rechargeData);
   }
