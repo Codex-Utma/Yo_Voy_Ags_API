@@ -25,7 +25,6 @@ model CardType {
 model Card {
   id Int @id
   serialNumber String @unique
-  description String?
   cardTypeId Int
   isPreferential Boolean @default(false)
   balance Decimal @db.Decimal(6, 2) @default(0)
