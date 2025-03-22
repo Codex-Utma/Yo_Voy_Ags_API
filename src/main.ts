@@ -14,7 +14,10 @@ async function bootstrap() {
       .setTitle('Yo Voy Ags App API')
       .setDescription('The Yo Voy Ags App API description')
       .setVersion('1.0')
-      .addServer('http://localhost:3000/', 'Local environment')
+      .addServer(
+        `http://localhost:${process.env.PORT ?? 3000}`,
+        'Local environment',
+      )
       .build();
 
     const document = SwaggerModule.createDocument(app, options);
