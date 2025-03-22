@@ -44,12 +44,16 @@ export class TransfersService {
       if (!cardUsed) {
         throw new HttpException('Card not used in the last 2 hours', 404);
       }
+
+      const updatedDate = new Date(cardUsed.createdAt);
+      updatedDate.setHours(updatedDate.getHours() + 6);
+
       const response = {
         busData: {
           id: cardUsed.Bus.id,
           route: cardUsed.Bus.Route.name,
         },
-        lastUsed: cardUsed.createdAt,
+        lastUsed: updatedDate,
       };
       return {
         message: 'Data found',
