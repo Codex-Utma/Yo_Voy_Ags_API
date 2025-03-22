@@ -69,6 +69,56 @@ export class ReportsService {
     }
   }
 
+  async getReports(reportTypeId: number | undefined) {
+    try {
+      const reports = await prisma.report.findMany({
+        where: {
+          reportTypeId: reportTypeId ? reportTypeId : undefined,
+        },
+        select: {
+          id: true,
+          description: true,
+          createdAt: true,
+          Bus: {
+            select: {
+              id: true,
+              Route: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+          ReportType: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+
+      reports.forEach((report) => {
+        report.createdAt = new Date(
+          report.createdAt.getTime() + 6 * 60 * 60 * 1000,
+        );
+      });
+
+      if (reports.length === 0) {
+        throw new HttpException('No reports found', 204);
+      }
+      const response = {
+        message: 'Data found',
+        data: reports,
+      };
+      return response;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('Internal Server Error', 500);
+    }
+  }
+
   private async ValidateBusId(busId: number): Promise<boolean> {
     const bus = await prisma.bus.findUnique({
       where: {
