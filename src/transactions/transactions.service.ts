@@ -3,6 +3,12 @@ import { RechargeRequestDto } from './dtos/request-recharge';
 import { PrismaClient } from '@prisma/client';
 import { UseRequestDto } from './dtos/request-use';
 
+import Stripe from 'stripe';
+
+const stripe = new Stripe(
+  'sk_test_51R2FqPKKbnxPxcYZ9KTsaupTXcj8pyOHFnrQ4subFte0M8NhP1ruXPRReSQKr3IJIwysa8sQvGZayERWZJ5ehWNU00nFDZBHvk',
+);
+
 const prisma = new PrismaClient();
 
 @Injectable()
@@ -138,6 +144,47 @@ export class TransactionsService {
       if (error instanceof HttpException) {
         throw error;
       }
+      throw new HttpException('Internal server error', 500);
+    }
+  }
+
+  async paymentSheet() {
+    try {
+      const customer = await stripe.customers.create();
+      const ephemeralKey = await stripe.ephemeralKeys.create(
+        { customer: customer.id },
+        { apiVersion: '2025-02-24.acacia' },
+      );
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: 1099,
+        currency: 'eur',
+        customer: customer.id,
+        // In the latest version of the API, specifying the `automatic_payment_methods` parameter
+        // is optional because Stripe enables its functionality by default.
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+
+      return {
+        customer: customer.id,
+        ephemeralKey: ephemeralKey.secret,
+        paymentIntent: paymentIntent.client_secret,
+        publishableKey:
+          'pk_test_51R2FqPKKbnxPxcYZH6ZCjQ8bp97KCow7EpZdWyGuUqexS4ahVH0MbB3PbBjI2kPgpQSO8sOLL38greAXICz8oYeC00Q7RwLhXy',
+      };
+    } catch (error) {
+      console.log(error);
+      throw new HttpException('Internal server error', 500);
+    }
+  }
+
+  getPublishableKey() {
+    try {
+      const key =
+        'pk_test_51R2FqPKKbnxPxcYZH6ZCjQ8bp97KCow7EpZdWyGuUqexS4ahVH0MbB3PbBjI2kPgpQSO8sOLL38greAXICz8oYeC00Q7RwLhXy';
+      return { key };
+    } catch {
       throw new HttpException('Internal server error', 500);
     }
   }

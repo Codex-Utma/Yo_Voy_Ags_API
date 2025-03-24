@@ -47,4 +47,14 @@ export class TransactionsController {
   getCardData(@Param('cardId') cardId: string) {
     return this.transactionsService.getCardData(cardId);
   }
+
+  @Get('p-key')
+  getPublicKey() {
+    return this.transactionsService.getPublishableKey();
+  }
+
+  @Post('paymentSheet')
+  paymentSheer() {
+    return this.transactionsService.paymentSheet();
+  }
 }
