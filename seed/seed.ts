@@ -21,17 +21,10 @@ async function seedDb() {
       data: [
         {
           id: 12345678,
-          serialNumber: '1A-2B-3C-4D',
+          serialNumber: 'E9 6F F9 B1',
           balance: 0,
           cardTypeId: 1,
           isPreferential: true,
-        },
-        {
-          id: 87654321,
-          serialNumber: '5E-6F-7G-8H',
-          balance: 0,
-          cardTypeId: 2,
-          isPreferential: false,
         },
       ],
     });
@@ -58,10 +51,34 @@ async function seedDb() {
         },
         {
           id: 5678,
-          routeId: 2,
+          routeId: 1,
         },
         {
           id: 9012,
+          routeId: 1,
+        },
+        {
+          id: 4321,
+          routeId: 2,
+        },
+        {
+          id: 8765,
+          routeId: 2,
+        },
+        {
+          id: 2109,
+          routeId: 2,
+        },
+        {
+          id: 1111,
+          routeId: 3,
+        },
+        {
+          id: 2222,
+          routeId: 3,
+        },
+        {
+          id: 3333,
           routeId: 3,
         },
       ],
