@@ -67,7 +67,7 @@ export class TransactionsService {
       await prisma.transaction.create({
         data: {
           cardId: card.cardId,
-          amount: -10.5,
+          amount: card.isPreferential ? -5.25 : -10.5,
           transferId: newTransfer.id,
         },
       });
