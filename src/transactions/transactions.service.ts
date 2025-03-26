@@ -142,6 +142,57 @@ export class TransactionsService {
     }
   }
 
+  async getUsedLastHour(cardId: number) {
+    try {
+      const ValidateCard = await this.ValidateCard(cardId);
+      if (!ValidateCard) {
+        throw new HttpException('Invalid card ID', 400);
+      }
+      const cardUsed = await prisma.transfer.findFirst({
+        orderBy: {
+          createdAt: 'desc',
+        },
+        where: {
+          cardId,
+          createdAt: {
+            gt: new Date(new Date().getTime() - 60 * 60 * 1000),
+          },
+        },
+        select: {
+          createdAt: true,
+          Bus: {
+            select: {
+              id: true,
+              Route: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!cardUsed) {
+        throw new HttpException('No card used in the last hour', 400);
+      }
+
+      const updatedCardUsed = {
+        ...cardUsed,
+        createdAt: new Date(cardUsed.createdAt.getTime() + 6 * 60 * 60 * 1000),
+      };
+
+      return {
+        cardUsed: updatedCardUsed,
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('Internal server error', 500);
+    }
+  }
+
   private async ValidateCard(
     cardId?: number,
     cardSerial?: string,

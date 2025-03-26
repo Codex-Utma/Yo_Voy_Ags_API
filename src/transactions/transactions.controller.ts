@@ -6,6 +6,7 @@ import { RechargeRequestDto } from './dtos/request-recharge';
 import { UseRequestDto } from './dtos/request-use';
 import { UseResponseDto } from './dtos/response-use';
 import { CardDataResponseDto } from './dtos/card-data-response';
+import { UsedLastHourDto } from './dtos/used-last-hour';
 
 @ApiTags('transactions')
 @Controller('transactions')
@@ -46,5 +47,19 @@ export class TransactionsController {
   @ApiResponse({ status: 500, description: 'Internal server error' })
   getCardData(@Param('cardId') cardId: string) {
     return this.transactionsService.getCardData(cardId);
+  }
+
+  @Get('usedLastHour/:cardId')
+  @ApiResponse({
+    status: 200,
+    description: 'Used last hour retrieved successfully',
+    type: UsedLastHourDto,
+  })
+  @ApiResponse({ status: 400, description: 'Invalid card id' })
+  @ApiResponse({ status: 400, description: 'Card not used in the last hour' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  getUsedLastHour(@Param('cardId') cardId: string) {
+    const cardIdNumber = Number(cardId);
+    return this.transactionsService.getUsedLastHour(cardIdNumber);
   }
 }
